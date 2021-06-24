@@ -1,0 +1,15 @@
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.Properties.Resources.resources
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.csproj.GenerateResource.cache
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.csproj.CoreCompileInputs.cache
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\bin\Debug\MVC4ACAD.dll
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\bin\Debug\MVC4ACAD.pdb
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\bin\Debug\accoremgd.dll
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\bin\Debug\acdbmgd.dll
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\bin\Debug\acmgd.dll
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\bin\Debug\AcMPolygonMGD.dll
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\bin\Debug\AcWindows.dll
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\bin\Debug\AdWindows.dll
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.csproj.CopyComplete
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.dll
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.pdb
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.csprojAssemblyReference.cache
