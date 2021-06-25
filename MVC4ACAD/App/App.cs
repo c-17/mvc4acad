@@ -12,8 +12,6 @@ namespace MVC4ACAD{
         #region PROPERTIES
         internal const String Name = "MVC-4-ACAD";
 
-        internal const String Prefijo = "MyProject";
-
         internal static List<Document> Documents = new List<Document>();
 
         internal static Document CurrentDocument => App.Documents.Find(D => D.Equals(Application.DocumentManager.MdiActiveDocument));
@@ -37,7 +35,7 @@ namespace MVC4ACAD{
 
             Application.Idle += new EventHandler(LoadDocument);
 
-            Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage("HOLA");
+            Application.DocumentManager.MdiActiveDocument.Editor.WriteMessage("MVC4ACAD is Running...");
             }
 
         public void Terminate(){}

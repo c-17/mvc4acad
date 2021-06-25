@@ -87,7 +87,7 @@
     </Compile>
     <Compile Include="System\Core\Constants.cs" />
     <Compile Include="System\Core\Extensions.cs" />
-    <Compile Include="System\Core\MyDocument.cs" />
+    <Compile Include="System\Core\Document.cs" />
     <Compile Include="System\Libs\LiteDB\Client\Database\Collections\Aggregate.cs" />
     <Compile Include="System\Libs\LiteDB\Client\Database\Collections\Delete.cs" />
     <Compile Include="System\Libs\LiteDB\Client\Database\Collections\Find.cs" />
@@ -335,4 +335,11 @@
     <Folder Include="System\AutoCAD\2013\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>taskkill /f /fi "pid gt 0" /im acad.exe</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

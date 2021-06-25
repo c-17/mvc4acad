@@ -16,7 +16,7 @@ using MVC4ACAD.Core;
 using MVC4ACAD.Models;
 
 namespace MVC4ACAD{
-    internal class Document:MyDocument{
+    internal class Document:MVC4ACAD.Core.Document{
         #region CONSTANTES
         #endregion
 
@@ -42,18 +42,14 @@ namespace MVC4ACAD{
         #endregion
 
         #region CONSTRUCTORS
-        internal Document(Autodesk.AutoCAD.ApplicationServices.Document Document):base(Document){
-            }
+        internal Document(Autodesk.AutoCAD.ApplicationServices.Document Document):base(Document){}
         #endregion
 
         #region FUNCTIONS
-        internal MyCircle CreateMyCircle(Point3d Center, Double Radius){
-            MyCircle MyCircle = new MyCircle(Center, Radius);
-
+        internal MyCircle CreateMyCircle(MyCircle MyCircle){
             try{
-                using(LiteDatabase LiteDatabase = this.LiteDatabase){
+                using(LiteDatabase LiteDatabase = this.LiteDatabase)
                     LiteDatabase.GetCollection<MyCircle>("MyCircles").Insert(MyCircle);
-                    }
                 }
             catch(Exception Exception){
                 Editor.WriteMessage("Exception: "+Exception.Message+" => "+Exception.StackTrace);
@@ -61,25 +57,63 @@ namespace MVC4ACAD{
 
             return MyCircle;
             }
+
+        private MyCircle ReadMyCircle(Int64 Handle){
+            try{
+                using(LiteDatabase LiteDatabase = this.LiteDatabase)
+                    return LiteDatabase.GetCollection<MyCircle>("MyCircles").Query().Where(E => E.Handle == Handle).FirstOrDefault();
+                }
+            catch(Exception Exception){
+                Editor.WriteMessage("Exception: "+Exception.Message+" => "+Exception.StackTrace);
+                }
+
+            return null;
+            }
+
+        internal MyCircle UpdateMyCircle(MyCircle MyCircle){
+            try{
+                using(LiteDatabase LiteDatabase = this.LiteDatabase)
+                    LiteDatabase.GetCollection<MyCircle>("MyCircles").Update(MyCircle);
+                }
+            catch(Exception Exception){
+                Editor.WriteMessage("Exception: "+Exception.Message+" => "+Exception.StackTrace);
+                }
+
+            return MyCircle;
+            }
+
+        internal Boolean DeleteMyCircle(MyCircle MyCircle){
+            try{
+                using(LiteDatabase LiteDatabase = this.LiteDatabase)
+                    return LiteDatabase.GetCollection<MyCircle>("MyCircles").Delete(new BsonValue(MyCircle.Id));
+                }
+            catch(Exception Exception){
+                Editor.WriteMessage("Exception: "+Exception.Message+" => "+Exception.StackTrace);
+                }
+
+            return false;
+            }
         #endregion
 
         #region PROMPT
-        internal PromptSelectionResult SeleccionaTrazos(String Mensaje, String MensajeDeReintento){
-            PromptSelectionOptions PromptSelectionOptions = new PromptSelectionOptions();
-            PromptSelectionOptions.AllowDuplicates = false;
-            PromptSelectionOptions.AllowSubSelections = false;
-            PromptSelectionOptions.ForceSubSelections = false;
-            PromptSelectionOptions.MessageForAdding = Mensaje;
-            PromptSelectionOptions.MessageForRemoval = MensajeDeReintento;
-            PromptSelectionOptions.PrepareOptionalDetails = false;
-            PromptSelectionOptions.RejectObjectsFromNonCurrentSpace = true;
-            PromptSelectionOptions.RejectObjectsOnLockedLayers = true;
-            PromptSelectionOptions.RejectPaperspaceViewport = true;
-            PromptSelectionOptions.SelectEverythingInAperture = false;
-            PromptSelectionOptions.SingleOnly = false;
-            PromptSelectionOptions.SinglePickInSpace = false;
+        internal MyCircle SelectMyCircle(String Message, String RejectMessage, String[] Words = null, String Word = null){
+            PromptEntityOptions PromptEntityOptions = new PromptEntityOptions("\n"+Message);
+            PromptEntityOptions.AllowObjectOnLockedLayer = true;
+            PromptEntityOptions.AllowNone = true;
+            PromptEntityOptions.SetRejectMessage("\n"+RejectMessage);
 
-            return Document.Editor.GetSelection(PromptSelectionOptions, new SelectionFilter(new TypedValue[2]{new TypedValue(Convert.ToInt32(DxfCode.Start), "LINE"), new TypedValue(Convert.ToInt32(DxfCode.LayerName), "HTPTrazos")}));
+            if(Words != null){
+                PromptEntityOptions.AppendKeywordsToMessage = true;
+                
+                Words.ToList().ForEach(K => PromptEntityOptions.Keywords.Add(K));
+
+                if(Word != null)
+                    PromptEntityOptions.Keywords.Default = Word;
+                }
+
+            PromptEntityResult PromptEntityResult = Editor.GetEntity(PromptEntityOptions);
+
+            return ReadMyCircle(PromptEntityResult.ObjectId.Handle.Value);
             }
         #endregion
         }

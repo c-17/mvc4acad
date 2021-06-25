@@ -9,8 +9,6 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Colors;
 
-using MVC4ACAD.Core;
-
 using LiteDB;
 
 namespace MVC4ACAD.Models{
@@ -25,9 +23,12 @@ namespace MVC4ACAD.Models{
 
         internal Int64 Handle{get; set;}
 
+        internal String Name{get; set;} = "XYZ";
+
         [BsonIgnore]
         internal Double Radius => Circle.Radius;
         
+        [BsonIgnore]
         internal Point3d Center => Circle.Center;
         #endregion
 

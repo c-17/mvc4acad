@@ -12,7 +12,7 @@ using Autodesk.AutoCAD.EditorInput;
 using LiteDB;
 
 namespace MVC4ACAD.Core{
-    internal abstract class MyDocument{
+    internal abstract class Document{
         #region PROPERTIES
         internal abstract String AppName{get;}
 
@@ -113,6 +113,7 @@ namespace MVC4ACAD.Core{
                         }
                     }
                 catch(Autodesk.AutoCAD.Runtime.Exception Exception){
+                    Editor.WriteMessage("Exception: "+Exception.Message+" => "+Exception.StackTrace);
                     //Internet.SendException(Assembly.GetExecutingAssembly(), Exception, this);
                     }
 
@@ -120,26 +121,26 @@ namespace MVC4ACAD.Core{
                 }
             }
 
-        protected Autodesk.AutoCAD.ApplicationServices.Document Document{get;}
+        protected Autodesk.AutoCAD.ApplicationServices.Document ACADDocument{get;}
 
-        internal Database Database => Document.Database;
+        internal Database Database => ACADDocument.Database;
 
-        internal Editor Editor => Document.Editor;
+        internal Editor Editor => ACADDocument.Editor;
 
-        internal DocumentLock LockDocument => Document.LockDocument();
+        internal DocumentLock LockDocument => ACADDocument.LockDocument();
         #endregion
         
         #region CONSTRUCTORS
-        internal MyDocument(Autodesk.AutoCAD.ApplicationServices.Document Document){
-            this.Document = Document;
+        internal Document(Autodesk.AutoCAD.ApplicationServices.Document ACADDocument){
+            this.ACADDocument = ACADDocument;
 
-            Document.Editor.CurrentUserCoordinateSystem = Matrix3d.Identity;
+            ACADDocument.Editor.CurrentUserCoordinateSystem = Matrix3d.Identity;
 
-            Document.Database.LineWeightDisplay = true;
+            ACADDocument.Database.LineWeightDisplay = true;
 
             //LiteDatabase = new LiteDatabase(MemoryStream = MyMemoryStream, BsonMapper);
 
-            Document.Database.BeginSave += new DatabaseIOEventHandler(DatabaseIOEventHandler);
+            ACADDocument.Database.BeginSave += new DatabaseIOEventHandler(DatabaseIOEventHandler);
             }
         #endregion
         
@@ -156,20 +157,20 @@ namespace MVC4ACAD.Core{
             return Buffers.Select(B => new TypedValue(Convert.ToInt32(DxfCode.ExtendedDataAsciiString), B)).ToArray();
             }
         
-        internal Boolean Equals(Autodesk.AutoCAD.ApplicationServices.Document Document) => this.Document == Document;
+        internal Boolean Equals(Autodesk.AutoCAD.ApplicationServices.Document ACADDocument) => this.ACADDocument == ACADDocument;
 
         internal void EraseEntity(Entity Entity){
             if(Entity.IsErased)
                 return;
 
-            using(Transaction Transaction = Document.Database.TransactionManager.StartTransaction()){
+            using(Transaction Transaction = ACADDocument.Database.TransactionManager.StartTransaction()){
                 Transaction.GetObject(Entity.ObjectId, OpenMode.ForWrite).Erase(true);
 
                 Transaction.Commit();
                 }
             }
 
-        internal void Dump(String File){
+        internal void Backup(String File){
             using(LiteDatabase LiteDatabase = this.LiteDatabase){
                 MemoryStream MemoryStream = new MemoryStream(this.MemoryStream.ToArray());
 
@@ -190,9 +191,11 @@ namespace MVC4ACAD.Core{
             }
 
         private void DatabaseIOEventHandler(Object Object, DatabaseIOEventArgs DatabaseIOEventArgs){
+            Editor.WriteMessage("DatabaseIOEventHandler");
+
             List<String> Buffers = Convert.ToBase64String(MemoryStream.ToArray()).Split(32000).ToList();
             
-            using(Document.LockDocument()){
+            using(ACADDocument.LockDocument()){
                 using(Transaction Transaction = Database.TransactionManager.StartTransaction()){
                     RegAppTable RegAppTable = Transaction.GetObject(Database.RegAppTableId, OpenMode.ForWrite) as RegAppTable;
                     RegAppTableRecord RegAppTableRecord = Transaction.GetObject(RegAppTable[AppName], OpenMode.ForWrite) as RegAppTableRecord;
@@ -238,7 +241,7 @@ namespace MVC4ACAD.Core{
                 PromptPointOptions.AllowNone = true;
                 }
 
-            return Document.Editor.GetPoint(PromptPointOptions);
+            return ACADDocument.Editor.GetPoint(PromptPointOptions);
             }
 
         internal PromptPointResult IndicaPunto(String Mensaje, Point3d PuntoBase, Boolean Desplazamiento = false, String[] PalabrasClave = null, String PalabraClavePredeterminada = ""){
@@ -263,7 +266,7 @@ namespace MVC4ACAD.Core{
                 PromptPointOptions.AllowNone = true;
                 }
 
-            return Document.Editor.GetPoint(PromptPointOptions);
+            return ACADDocument.Editor.GetPoint(PromptPointOptions);
             }
         #endregion
         }
