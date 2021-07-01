@@ -8,8 +8,6 @@ namespace LiteDB{
     public partial class LiteDatabase{
         public event EventHandler OnDisposing;
 
-        protected virtual void OnDispose(EventArgs EventArgs){
-            OnDisposing?.Invoke(this, EventArgs);
-            }
+        protected virtual void OnDispose(EventArgs EventArgs) => OnDisposing?.Invoke(this, EventArgs);
         }
     }

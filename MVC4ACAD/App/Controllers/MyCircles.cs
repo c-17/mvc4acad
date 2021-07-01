@@ -42,6 +42,8 @@ namespace MVC4ACAD.Controllers{
         [CommandMethod(MVC4ACAD_U)]
         public static void MVC4ACAD_U_F(){
             Document Document = App.CurrentDocument;
+
+            MyCircle MyCircle = Document.SelectMyCircle("Select a MyCircle", "Must select a MyCircle");
             }
         
         [CommandMethod(MVC4ACAD_D)]

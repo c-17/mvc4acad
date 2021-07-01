@@ -12,3 +12,4 @@ C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\bin\Debug
 C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.csproj.CopyComplete
 C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.dll
 C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.pdb
+C:\Users\Chris\Documents\Visual Studio 2017\Projects\MVC4ACAD\MVC4ACAD\obj\Debug\MVC4ACAD.csprojAssemblyReference.cache

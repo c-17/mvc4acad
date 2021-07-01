@@ -12,7 +12,7 @@ using Autodesk.AutoCAD.Colors;
 using LiteDB;
 
 namespace MVC4ACAD.Models{
-    internal class MyCircle{
+    public class MyCircle{
 
         [BsonIgnore]
         private Circle Circle;
@@ -21,15 +21,19 @@ namespace MVC4ACAD.Models{
         [BsonId]
         internal Int64 Id{get; set;}
 
-        internal Int64 Handle{get; set;}
+        internal String Handle{get; set;}
 
         internal String Name{get; set;} = "XYZ";
 
         [BsonIgnore]
         internal Double Radius => Circle.Radius;
+
+        protected Double OrigRadius{get; set;}
         
         [BsonIgnore]
         internal Point3d Center => Circle.Center;
+
+        protected Point3d OrigCenter{get; set;}
         #endregion
 
         #region CONSTRUCTORS
@@ -46,7 +50,13 @@ namespace MVC4ACAD.Models{
                 BlockTableRecord.AppendEntity(Circle);
                 Transaction.AddNewlyCreatedDBObject(Circle, true);
 
-                Id = Handle = Circle.Handle.Value;
+                Id = Circle.Handle.Value;
+
+                Handle = Circle.Handle.Value.ToString("X");
+
+                OrigCenter = Center;
+
+                OrigRadius = Radius;
 
                 Transaction.Commit();
                 }
@@ -54,6 +64,27 @@ namespace MVC4ACAD.Models{
         #endregion
 
         #region FUNCTIONS
+        internal MyCircle Revive(){
+            using(Transaction Transaction = HostApplicationServices.WorkingDatabase.TransactionManager.StartTransaction()){
+                BlockTable BlockTable = Transaction.GetObject(HostApplicationServices.WorkingDatabase.BlockTableId, OpenMode.ForRead) as BlockTable;
+                BlockTableRecord BlockTableRecord = Transaction.GetObject(BlockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+
+                if(HostApplicationServices.WorkingDatabase.TryGetObjectId(new Handle(Id), out Autodesk.AutoCAD.DatabaseServices.ObjectId ObjectId) && !ObjectId.IsErased)
+                    Circle = Transaction.GetObject(ObjectId, OpenMode.ForWrite) as Circle;
+                else{
+                    Circle = new Circle(OrigCenter, Vector3d.ZAxis, OrigRadius);
+
+                    BlockTableRecord.AppendEntity(Circle);
+                    Transaction.AddNewlyCreatedDBObject(Circle, true);
+
+                    Handle = Circle.Handle.Value.ToString("X");
+                    }
+
+                Transaction.Commit();
+                }
+
+            return this;
+            }
         /*internal static ILiteCollection<Pozo> IncludeAll(LiteDatabase LiteDatabase){
             return LiteDatabase.GetCollection<Pozo>("Pozos")
                 .Include(P => P.Red)

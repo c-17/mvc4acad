@@ -16,7 +16,7 @@ using MVC4ACAD.Core;
 using MVC4ACAD.Models;
 
 namespace MVC4ACAD{
-    internal class Document:MVC4ACAD.Core.Document{
+    internal class Document:Core.Document{
         #region CONSTANTES
         #endregion
 
@@ -34,7 +34,7 @@ namespace MVC4ACAD{
                 BsonMapper.IncludeNonPublic = true;
                 
                 BsonMapper.Entity<MyCircle>()
-                    .Id(T => T.Id);
+                    .Id(E => E.Id);
                 
                 return BsonMapper;
                 }
@@ -60,8 +60,14 @@ namespace MVC4ACAD{
 
         private MyCircle ReadMyCircle(Int64 Handle){
             try{
-                using(LiteDatabase LiteDatabase = this.LiteDatabase)
-                    return LiteDatabase.GetCollection<MyCircle>("MyCircles").Query().Where(E => E.Handle == Handle).FirstOrDefault();
+                using(LiteDatabase LiteDatabase = this.LiteDatabase){
+                    MyCircle MyCircle = LiteDatabase.GetCollection<MyCircle>("MyCircles").Query().Where(E => E.Id == Handle).FirstOrDefault();
+
+                    if(MyCircle != null)
+                        MyCircle.Init();
+
+                    return MyCircle;
+                    }
                 }
             catch(Exception Exception){
                 Editor.WriteMessage("Exception: "+Exception.Message+" => "+Exception.StackTrace);

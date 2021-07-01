@@ -191,8 +191,6 @@ namespace MVC4ACAD.Core{
             }
 
         private void DatabaseIOEventHandler(Object Object, DatabaseIOEventArgs DatabaseIOEventArgs){
-            Editor.WriteMessage("DatabaseIOEventHandler");
-
             List<String> Buffers = Convert.ToBase64String(MemoryStream.ToArray()).Split(32000).ToList();
             
             using(ACADDocument.LockDocument()){

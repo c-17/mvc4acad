@@ -381,7 +381,7 @@ namespace LiteDB
             {
                 _engine.Dispose();
                 
-                //OnDispose(EventArgs.Empty);
+                OnDispose(EventArgs.Empty);
             }
         }
     }
